@@ -1,6 +1,19 @@
-.div {
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 5px;
+body{
+    background:#eafaf5;
+}
 
+.container{
+    background:white;
+    padding:30px;
+    margin-top:40px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+table{
+    background:white;
 }
