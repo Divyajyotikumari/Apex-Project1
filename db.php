@@ -25,6 +25,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'editor',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
@@ -51,6 +52,10 @@ if (!in_array('username', $usersFields, true)) {
 
 if (!in_array('password', $usersFields, true)) {
     $conn->query("ALTER TABLE users ADD COLUMN password VARCHAR(255) NOT NULL");
+}
+
+if (!in_array('role', $usersFields, true)) {
+    $conn->query("ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'editor'");
 }
 
 if (!in_array('created_at', $usersFields, true)) {

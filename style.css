@@ -1,28 +1,84 @@
 body {
-    background: #eafaf5;
-    font-family: Arial, sans-serif;
+    background: #000000;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+    color: #e2e8f0;
 }
 
 .container {
-    background: white;
-    padding: 30px;
+    background: rgba(255, 255, 255, 0.97);
+    color: #1f2937;
+    padding: 35px;
     margin-top: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    border-radius: 16px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
 }
 
 h2, h3 {
     margin-bottom: 20px;
+    color: #1d4ed8;
 }
 
 table {
     background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #2563eb;
+    color: white;
 }
 
 .form-control {
     max-width: 600px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.2);
 }
 
 .alert {
     max-width: 600px;
+    border-radius: 10px;
 }
+
+.pagination .page-item.active .page-link {
+    background-color: #7c3aed;
+    border-color: #7c3aed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border: none;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #059669, #10b981);
+    border: none;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: #111827;
+    border: none;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    border: none;
+}
+
+.btn-outline-primary,
+.btn-outline-danger {
+    border-radius: 8px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    transition: 0.2s ease-in-out;
+}
+

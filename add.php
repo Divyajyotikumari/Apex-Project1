@@ -6,13 +6,31 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 
+if (!in_array($_SESSION["role"] ?? "editor", ["admin", "editor"], true)) {
+    header("Location: index.php");
+    exit();
+}
+
 $message = "";
 
 if (isset($_POST["save"])) {
     $title = trim($_POST["title"]);
     $content = trim($_POST["content"]);
+    $errors = [];
 
-    if ($title !== "" && $content !== "") {
+    if ($title === "") {
+        $errors[] = "Title is required.";
+    } elseif (strlen($title) > 200) {
+        $errors[] = "Title must be 200 characters or less.";
+    }
+
+    if ($content === "") {
+        $errors[] = "Content is required.";
+    } elseif (strlen($content) > 5000) {
+        $errors[] = "Content must be 5000 characters or less.";
+    }
+
+    if (empty($errors)) {
         $stmt = $conn->prepare("INSERT INTO posts (title, content) VALUES (?, ?)");
         $stmt->bind_param("ss", $title, $content);
         $stmt->execute();
@@ -21,7 +39,7 @@ if (isset($_POST["save"])) {
         exit();
     }
 
-    $message = "Please enter both title and content.";
+    $message = implode(" ", $errors);
 }
 ?>
 
@@ -41,8 +59,8 @@ if (isset($_POST["save"])) {
         <div class="alert alert-warning"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
     <form method="post">
-        <input type="text" name="title" class="form-control mb-3" placeholder="Title" required>
-        <textarea name="content" class="form-control mb-3" placeholder="Content" rows="6" required></textarea>
+        <input type="text" name="title" class="form-control mb-3" placeholder="Title" minlength="3" maxlength="200" required>
+        <textarea name="content" class="form-control mb-3" placeholder="Content" rows="6" minlength="1" maxlength="5000" required></textarea>
         <button class="btn btn-success" name="save">Save</button>
         <a href="index.php" class="btn btn-secondary">Cancel</a>
     </form>

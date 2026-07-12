@@ -13,7 +13,7 @@ if (isset($_POST["login"])) {
     $password = $_POST["password"];
 
     if ($username !== "" && $password !== "") {
-        $stmt = $conn->prepare("SELECT id, username, password FROM users WHERE username = ?");
+        $stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -23,6 +23,7 @@ if (isset($_POST["login"])) {
         if ($user && password_verify($password, $user["password"])) {
             $_SESSION["user_id"] = $user["id"];
             $_SESSION["username"] = $user["username"];
+            $_SESSION["role"] = $user["role"];
             header("Location: index.php");
             exit();
         }
@@ -45,13 +46,16 @@ if (isset($_POST["login"])) {
 </head>
 <body>
 <div class="container mt-5">
-    <h3>Login</h3>
+    <div class="text-center mb-4">
+        <img src="../image1.jpg" alt="Login illustration" class="img-fluid rounded" style="max-height: 180px;">
+    </div>
+    <h3 class="text-center">Login</h3>
     <?php if ($message !== ""): ?>
         <div class="alert alert-danger"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
     <form method="post">
-        <input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
-        <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
+        <input type="text" name="username" class="form-control mb-3" placeholder="Username" minlength="3" maxlength="20" required>
+        <input type="password" name="password" class="form-control mb-3" placeholder="Password" minlength="6" required>
         <button class="btn btn-success" name="login">Login</button>
         <a href="register.php" class="btn btn-secondary">Register</a>
     </form>

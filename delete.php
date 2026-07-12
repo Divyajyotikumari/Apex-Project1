@@ -6,6 +6,11 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 
+if (!in_array($_SESSION["role"] ?? "editor", ["admin", "editor"], true)) {
+    header("Location: index.php");
+    exit();
+}
+
 if (isset($_GET["id"])) {
     $id = (int) $_GET["id"];
     $stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");

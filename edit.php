@@ -6,6 +6,11 @@ if (!isset($_SESSION["user_id"])) {
     exit();
 }
 
+if (!in_array($_SESSION["role"] ?? "editor", ["admin", "editor"], true)) {
+    header("Location: index.php");
+    exit();
+}
+
 $id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 $stmt = $conn->prepare("SELECT * FROM posts WHERE id = ?");
 $stmt->bind_param("i", $id);
@@ -22,8 +27,21 @@ if (!$row) {
 if (isset($_POST["update"])) {
     $title = trim($_POST["title"]);
     $content = trim($_POST["content"]);
+    $errors = [];
 
-    if ($title !== "" && $content !== "") {
+    if ($title === "") {
+        $errors[] = "Title is required.";
+    } elseif (strlen($title) > 200) {
+        $errors[] = "Title must be 200 characters or less.";
+    }
+
+    if ($content === "") {
+        $errors[] = "Content is required.";
+    } elseif (strlen($content) > 5000) {
+        $errors[] = "Content must be 5000 characters or less.";
+    }
+
+    if (empty($errors)) {
         $updateStmt = $conn->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
         $updateStmt->bind_param("ssi", $title, $content, $id);
         $updateStmt->execute();
@@ -47,8 +65,8 @@ if (isset($_POST["update"])) {
 <div class="container mt-5">
     <h3>Edit Post</h3>
     <form method="post">
-        <input type="text" name="title" class="form-control mb-3" value="<?php echo htmlspecialchars($row['title']); ?>" required>
-        <textarea name="content" class="form-control mb-3" rows="6" required><?php echo htmlspecialchars($row['content']); ?></textarea>
+        <input type="text" name="title" class="form-control mb-3" value="<?php echo htmlspecialchars($row['title']); ?>" minlength="3" maxlength="200" required>
+        <textarea name="content" class="form-control mb-3" rows="6" minlength="1" maxlength="5000" required><?php echo htmlspecialchars($row['content']); ?></textarea>
         <button class="btn btn-warning" name="update">Update</button>
         <a href="index.php" class="btn btn-secondary">Cancel</a>
     </form>

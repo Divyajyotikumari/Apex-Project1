@@ -11,8 +11,21 @@ $message = "";
 if (isset($_POST["register"])) {
     $username = trim($_POST["username"]);
     $password = $_POST["password"];
+    $errors = [];
 
-    if ($username !== "" && $password !== "") {
+    if ($username === "") {
+        $errors[] = "Username is required.";
+    } elseif (strlen($username) < 3 || strlen($username) > 20) {
+        $errors[] = "Username must be between 3 and 20 characters.";
+    }
+
+    if ($password === "") {
+        $errors[] = "Password is required.";
+    } elseif (strlen($password) < 6) {
+        $errors[] = "Password must be at least 6 characters.";
+    }
+
+    if (empty($errors)) {
         $check = $conn->prepare("SELECT id FROM users WHERE username = ?");
         $check->bind_param("s", $username);
         $check->execute();
@@ -22,8 +35,9 @@ if (isset($_POST["register"])) {
             $message = "Username already exists.";
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-            $stmt->bind_param("ss", $username, $hash);
+            $role = "editor";
+            $stmt = $conn->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $hash, $role);
             $stmt->execute();
             $stmt->close();
             $message = "Registration successful. Please login.";
@@ -31,7 +45,7 @@ if (isset($_POST["register"])) {
 
         $check->close();
     } else {
-        $message = "Please fill in all fields.";
+        $message = implode(" ", $errors);
     }
 }
 ?>
@@ -52,8 +66,8 @@ if (isset($_POST["register"])) {
         <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
     <form method="post">
-        <input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
-        <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
+        <input type="text" name="username" class="form-control mb-3" placeholder="Username" minlength="3" maxlength="20" required>
+        <input type="password" name="password" class="form-control mb-3" placeholder="Password" minlength="6" required>
         <button class="btn btn-primary" name="register">Register</button>
         <a href="login.php" class="btn btn-secondary">Login</a>
     </form>
