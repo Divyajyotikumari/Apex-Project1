@@ -1,19 +1,28 @@
-body{
-    background:#eafaf5;
+body {
+    background: #eafaf5;
+    font-family: Arial, sans-serif;
 }
 
-.container{
-    background:white;
-    padding:30px;
-    margin-top:40px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.2);
+.container {
+    background: white;
+    padding: 30px;
+    margin-top: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
 }
 
-h2{
-    margin-bottom:20px;
+h2, h3 {
+    margin-bottom: 20px;
 }
 
-table{
-    background:white;
+table {
+    background: white;
+}
+
+.form-control {
+    max-width: 600px;
+}
+
+.alert {
+    max-width: 600px;
 }
