@@ -61,6 +61,7 @@ if (isset($_POST["register"])) {
 </head>
 <body>
 <div class="container mt-5">
+    <h1>CRUD Application</h1>
     <h3>Create an Account</h3>
     <?php if ($message !== ""): ?>
         <div class="alert alert-info"><?php echo htmlspecialchars($message); ?></div>

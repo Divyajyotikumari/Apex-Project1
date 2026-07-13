@@ -19,6 +19,12 @@ h2, h3 {
     color: #1d4ed8;
 }
 
+h1 {
+    margin-bottom: 20px;
+    color: #2f273b;
+    text-align: center;
+}
+
 table {
     background: white;
     border-radius: 10px;
