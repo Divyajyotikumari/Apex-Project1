@@ -6,18 +6,42 @@ $user = "root";
 $pass = "";
 $dbname = "blog";
 
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    if ($conn->connect_errno === 1049) {
-        $conn = new mysqli($host, $user, $pass);
-        if ($conn->connect_error) {
+// Function to establish database connection
+function connectDB() {
+    global $host, $user, $pass, $dbname;
+    
+    $conn = @new mysqli($host, $user, $pass, $dbname);
+    
+    if ($conn->connect_error) {
+        if ($conn->connect_errno === 1049) {
+            $conn = @new mysqli($host, $user, $pass);
+            if ($conn->connect_error) {
+                die("Database connection failed: " . $conn->connect_error);
+            }
+            $conn->query("CREATE DATABASE IF NOT EXISTS $dbname");
+            $conn->select_db($dbname);
+        } else {
             die("Database connection failed: " . $conn->connect_error);
         }
-        $conn->query("CREATE DATABASE IF NOT EXISTS blog");
-        $conn->select_db($dbname);
-    } else {
-        die("Database connection failed: " . $conn->connect_error);
+    }
+    
+    // Set connection charset and timeout
+    $conn->set_charset("utf8mb4");
+    $conn->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
+    
+    return $conn;
+}
+
+// Establish connection
+$conn = connectDB();
+
+// Check connection status function
+function checkConnection(&$conn) {
+    global $host, $user, $pass, $dbname;
+    
+    if (!$conn->ping()) {
+        $conn->close();
+        $conn = connectDB();
     }
 }
 
