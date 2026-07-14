@@ -12,9 +12,17 @@ if (!in_array($_SESSION["role"] ?? "editor", ["admin", "editor"], true)) {
 }
 
 $id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
+checkConnection($conn);
+
 $stmt = $conn->prepare("SELECT * FROM posts WHERE id = ?");
+if ($stmt === false) {
+    die("Prepare failed: " . $conn->error);
+}
+
 $stmt->bind_param("i", $id);
-$stmt->execute();
+if (!$stmt->execute()) {
+    die("Execute failed: " . $stmt->error);
+}
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 $stmt->close();
@@ -25,6 +33,8 @@ if (!$row) {
 }
 
 if (isset($_POST["update"])) {
+    checkConnection($conn);
+    
     $title = trim($_POST["title"]);
     $content = trim($_POST["content"]);
     $errors = [];
@@ -43,8 +53,14 @@ if (isset($_POST["update"])) {
 
     if (empty($errors)) {
         $updateStmt = $conn->prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?");
+        if ($updateStmt === false) {
+            die("Prepare failed: " . $conn->error);
+        }
+        
         $updateStmt->bind_param("ssi", $title, $content, $id);
-        $updateStmt->execute();
+        if (!$updateStmt->execute()) {
+            die("Execute failed: " . $updateStmt->error);
+        }
         $updateStmt->close();
         header("Location: index.php");
         exit();

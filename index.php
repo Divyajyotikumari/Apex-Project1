@@ -14,6 +14,8 @@ $page = isset($_GET["page"]) ? max(1, (int) $_GET["page"]) : 1;
 $search = isset($_GET["search"]) ? trim($_GET["search"]) : "";
 $offset = ($page - 1) * $limit;
 
+checkConnection($conn);
+
 $where = "";
 $params = [];
 
@@ -25,10 +27,15 @@ if ($search !== "") {
 
 $countSql = "SELECT COUNT(*) AS total FROM posts{$where}";
 $countStmt = $conn->prepare($countSql);
+if ($countStmt === false) {
+    die("Prepare failed: " . $conn->error);
+}
 if ($search !== "") {
     $countStmt->bind_param("ss", $params[0], $params[1]);
 }
-$countStmt->execute();
+if (!$countStmt->execute()) {
+    die("Execute failed: " . $countStmt->error);
+}
 $countResult = $countStmt->get_result();
 $countRow = $countResult->fetch_assoc();
 $totalPosts = (int) $countRow["total"];
@@ -37,12 +44,17 @@ $countStmt->close();
 
 $sql = "SELECT * FROM posts{$where} ORDER BY created_at DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
+if ($stmt === false) {
+    die("Prepare failed: " . $conn->error);
+}
 if ($search !== "") {
     $stmt->bind_param("ssii", $params[0], $params[1], $limit, $offset);
 } else {
     $stmt->bind_param("ii", $limit, $offset);
 }
-$stmt->execute();
+if (!$stmt->execute()) {
+    die("Execute failed: " . $stmt->error);
+}
 $result = $stmt->get_result();
 $stmt->close();
 ?>

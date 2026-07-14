@@ -12,10 +12,18 @@ if (!in_array($_SESSION["role"] ?? "editor", ["admin", "editor"], true)) {
 }
 
 if (isset($_GET["id"])) {
+    checkConnection($conn);
+    
     $id = (int) $_GET["id"];
     $stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");
+    if ($stmt === false) {
+        die("Prepare failed: " . $conn->error);
+    }
+    
     $stmt->bind_param("i", $id);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        die("Execute failed: " . $stmt->error);
+    }
     $stmt->close();
 }
 

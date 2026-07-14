@@ -14,6 +14,8 @@ if (!in_array($_SESSION["role"] ?? "editor", ["admin", "editor"], true)) {
 $message = "";
 
 if (isset($_POST["save"])) {
+    checkConnection($conn);
+    
     $title = trim($_POST["title"]);
     $content = trim($_POST["content"]);
     $errors = [];
@@ -32,8 +34,14 @@ if (isset($_POST["save"])) {
 
     if (empty($errors)) {
         $stmt = $conn->prepare("INSERT INTO posts (title, content) VALUES (?, ?)");
+        if ($stmt === false) {
+            die("Prepare failed: " . $conn->error);
+        }
+        
         $stmt->bind_param("ss", $title, $content);
-        $stmt->execute();
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
         $stmt->close();
         header("Location: index.php");
         exit();
