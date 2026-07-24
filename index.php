@@ -184,7 +184,7 @@ $stmt->close();
 
         .btn-glass:hover {
             background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(148, 105, 105, 0.5);
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             color: white;
@@ -196,7 +196,7 @@ $stmt->close();
         }
 
         .btn-glass-primary:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            background: linear-gradient(135deg, #21192e 0%, #667eea 100%);
             color: white;
         }
 
